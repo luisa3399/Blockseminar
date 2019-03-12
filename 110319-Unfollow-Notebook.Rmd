@@ -1,0 +1,190 @@
+---
+title: "Unfollowme Notebook"
+output: html_notebook
+---
+
+**Projekt Unfollowme und Counter Speech**
+
+Wichtige Netzwerkma??e: 
+Degrees 
+Migrationshintergrund etc. weniger follower = weniger degrees?
+Cluster
+density f??r engagieren sie sich f??r das gleiche und viel ?
+Isolates 
+Broker 
+nach politik schauen (wenn LGN dann auch andere Politik?)
+
+```{r Pakete laden}
+library("igraph")
+library("igraphdata")
+
+# Selbsttest: Manipulieren Sie direkt im Skript oben die Werte f??r n=18 und power=1. Was passiert, wenn 35 Personen im Netzwerk sind und die Power den Wert 2 hat?
+```
+
+```{r Unfollowme Teilnetzwerk}
+unfollowed <- read.csv("https://raw.githubusercontent.com/birx/Blockseminar/master/03UFEdgelist.csv", header=T, as.is=T) # Liest die Edgelist ein.
+unfollownod <- read.csv("https://raw.githubusercontent.com/birx/Blockseminar/master/01UFNodelist.csv", header=T, as.is=T) # Liest die Nodelist ein.
+unfollowed <- as.matrix(unfollowed) # Erstellt aus der Edgelist eine Matrix.
+unfollow<- graph_from_data_frame(d=unfollowed, vertices=unfollownod, directed=F) # Fuegt die Edge- und Nodelist zu einem igraph-Objekt zusammen.
+plot(unfollow, layout=layout_with_kk, sub= "Netzwerk von Unfollowme") 
+UF2 <- delete_vertices(unfollow, V(unfollow)[name = "Laut gegen Nazis"])
+plot(LGN, layout=layout_nicely, main= "Ohne LGN", sub= "Netzwerk von Unfollowme ohne Laut gegen Nazis") #vertex.color= "peru", vertex.label.color="grey27"
+
+# Selbsttest: Manipulieren Sie direkt im Skript oben die Werte f??r n=18 und power=1. Was passiert, wenn 35 Personen im Netzwerk sind und die Power den Wert 2 hat?
+```
+
+```{r Counterspeech Teilnetzwerk}
+csnod <- read.csv("https://raw.githubusercontent.com/birx/Blockseminar/master/02CSNodelist.csv", header=T, as.is=T)
+csedge <- read.csv("https://raw.githubusercontent.com/birx/Blockseminar/master/03CSEdgelist.csv", header=T, as.is=T)
+countered <- as.matrix(csedge)
+counterspeech<- graph_from_data_frame(d=csedge, vertices=csnod, directed=F)
+plot(counterspeech, layout=layout_with_kk)
+CS2<- delete_vertices(counterspeech, V(counterspeech)[name="Laut gegen Nazis"])
+plot(CS2, layout=layout_with_kk)
+plot(CS2)# vertex.color=c("pink", "skyblue")[1
+
+```
+
+
+```{r Netzwerk zusammen}
+zusnod <- read.csv("https://raw.githubusercontent.com/birx/Blockseminar/master/GemeinsamNodes06.csv", header=T, as.is=T)
+zusedge <-  read.csv("https://raw.githubusercontent.com/birx/Blockseminar/master/GemeinsamEdges01.csv", header=T, as.is=T)
+zusmatrix <- as.matrix(zusedge)
+zusammen <- graph_from_data_frame(d=zusedge, vertices=zusnod, directed=F)
+plot(zusammen, layout=layout_with_gem)
+zusammen
+
+LGN <- delete_vertices(zusammen, V(zusammen)[name="Laut gegen Nazis"])
+# plot(zusammen, edge.arrow.size=.5, vertex.label.color="black",
+```
+
+```{r visualisierungen }
+
+V(zusammen)$color <- "gold"
+plot(zusammen)
+
+
+
+```
+ 
+Die einzelnen Projekte werden Visualisiert, dabei werden die Knoten, die sowohl in Counterspeech als auch in Unfollowme vorkommen gr??n visualisiert. 
+```{r Visualisierung der Projekte}
+V(zusammen)[(V(zusammen)$type=="2")]$shape <- "square"
+V(zusammen)[(V(zusammen)$type=="1")]$shape <- "circle"
+V(zusammen)[(V(zusammen)$Projekt=="3")]$color <- "darkolivegreen2"
+V(zusammen)[(V(zusammen)$Projekt=="1")]$color <- "coral1"
+V(zusammen)[(V(zusammen)$Projekt=="2")]$color <- "deepskyblue"
+plot(zusammen)
+
+V(zusammen)[(V(zusammen)$Projekt=="3")]$color <- "gold"
+V(zusammen)[(V(zusammen)$Projekt=="1")]$color <- "gold"
+V(zusammen)[(V(zusammen)$Projekt=="2")]$color <- "gold"
+
+plot(zusammen)
+
+
+```
+These: Es engagieren sich mehr K??nstler mit Migrationshintergrund bei den Projekten, da ... 
+
+Um herauszufinden, welche der K??nstler einen Migrationshintergrund haben wird nach dem attribut "migration" selektiert, das den Wert 1 oder 2 annimmt
+herausfinden, welche K??nstler einen Migrationshintergrund haben und welche nicht
+```{r Migration herausfinden }
+V(zusammen)[(V(zusammen)$type=="2")]$shape <- "square"
+V(zusammen)[(V(zusammen)$type=="1")]$shape <- "circle"
+
+V(LGN)[(V(LGN)$type=="2")]$shape <- "square"
+V(LGN)[(V(LGN)$type=="1")]$shape <- "circle"
+plot (zusammen)
+
+V(zusammen)[(V(zusammen)$migration=="1")]$color <- "red" 
+
+migration<- delete_vertices(zusammen, V(zusammen)[migration =="99"]) # es werden knoten gel??scht, damit nur die ??brig bleiben, die K??nstler ??brig bleiben, die einen Migrationshintergrund haben f??r eine bessere ??bersicht. 
+plot(migration,layout=layout_in_circle) 
+
+plot(zusammen, layout= layout_nicely)
+     
+
+```
+Man kann erkennen, dass 
+
+
+
+herausfinden, ob K??nstler mit Migrationshintergrund sich auch eher f??r Politik engagieren
+```{r Migration und Politik }
+  V(zusammen)[(V(zusammen)$engagement=="5")]$color <- "firebrick"
+
+plot(zusammen, layout=layout_with_kk)
+
+politik1<- delete_vertices(zusammen, V(zusammen)[engagement !="5" & type=="2" ]) # alles l??schen was sowohl nicht sich f??r politik engagiert ALS AUCH eine Organisation ist (alle Organisationen die sich nicht f??r politik engagieren)
+mmigration <- delete_vertices(politik1, V(politik1)[type=="1" & migration != "1"])
+mm<- delete_vertices(mmigration, V(mmigration)[name=="Laut gegen Nazis"])
+plot(mm)
+degree(mm)
+```
+K??nstler mit Migrationshintergrund engagieren sich f??r 7 Organisationen der Politik. Insgesamt gibt es 16 Menschen mit Migrationshintergrund. 
+
+Es wurden alle Organisationen gel??scht, die sich nicht f??r Politik engagieren und alle Personen, die keinen Migrationshintergrund haben. Es bleibt das Netzwerk aus Menschen mit Migrationshintergrund. Man erkennt, dass nun 5 Organisationen aus dem Bereich Politik alleine stehen. 6 Organisationen aus dem Bereich Politik sind mit K??nstlern mit Migrationshintergrund verbunden. 
+
+Nun werden die K??nstler ohne Migrationshintergrund zum Vergleich herangezogen. 
+
+```{r}
+V(zusammen)[(V(zusammen)$engagement=="5")]$color <- "firebrick"
+politik2<- delete_vertices(zusammen, V(zusammen)[engagement !="5" & type=="2" ]) # alles l??schen was sowohl nicht sich f??r politik engagiert ALS AUCH eine Organisation ist (alle Organisationen die sich nicht f??r politik engagieren)
+omigration <- delete_vertices(politik2, V(politik2)[migration=="1"])
+om <- delete_vertices(omigration, V(omigration)[name="Laut gegen Nazis"])
+plot(om, layout=layout_with_kk)
+degree(om) # die summe aller Degrees ist 18 = 9 Verbindungen 
+
+
+```
+ K??nstler ohne Migrationshintergrund engagieren sich f??r 9 Organisationen der Politik. Insgesamt gibt es 25 Personen ohne Migrationshintergrund. 
+ 
+ Gegen??berstellung beider Netzwerke: 
+```{r}
+par(mfrow=c(1,2), mar=c(0,0,2,1)) # definiert, dass 3 Abbildungen in einer Zeile stehen
+plot(om, 
+     sub = "K??nstler ohne Migrationshintergrund, die sich f??r politische Organisationen engagieren")
+plot(mm,
+     sub= "K??nstler mit Migrationshintergrund, die sich f??r politische Organisationen engagieren")
+
+
+par(mfrow=c(1,1), mar=c(0,0,2,2)) # setzt die Darstellung wieder zur??ck
+```
+
+
+
+```{r Netzwerkma??e}
+components(zusammen) # Anzahl der Komponenten (alle Knoten, die miteinander verbunden sind)
+is_connected(zusammen) # zeigt an ob das Netzwerk miteinander verbunden ist (ob es eine einzige Komponente ist)
+
+diameter(zusammen) # Welchen Durchmesser hat das Netzwerk? (Umfang) Berechnet, wie der Abstand im Netzwerk ist
+
+edge_density(zusammen) # Wie ist die Dichte des Netzwerks? 
+edge_density(unfollow)
+edge_density(counterspeech)
+
+plot(LGN, layout=layout_with_kk, main= "unfollow")
+plot(CS2, layout=layout_with_kk, main = "Counterspeech")
+
+mean_distance (zusammen)# Pfaddistanz wie lange bis zum am weitesten entfernten Knoten? 
+
+```
+
+```{r Clusteranalyse}
+gc <- cluster_walktrap(UF2)
+modularity(gc)
+membership(gc)
+plot (gc, UF2, edge.arrow.size=.2, layout=layout_nicely)
+
+gc <- cluster_walktrap(CS2)
+modularity(gc)
+membership(gc)
+plot (gc, CS2, edge.arrow.size=.2, layout=layout_nicely)
+
+
+
+```
+
+
+
+
