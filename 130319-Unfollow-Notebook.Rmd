@@ -1,0 +1,295 @@
+---
+title: "Unfollowme Notebook"
+output: html_notebook
+---
+
+**Projekt Unfollowme und Counter Speech**
+
+Thesen 
+bekannte K??nstler engagieren sich h??ufiger 
+K??nstler, die das selbe Management haben unterst??tzen dieselben Organisationen 
+K??nstler, die Laut gegen Nazis unterst??tzen engagieren sich auch sonst f??r politische Organisationen
+K??nstler, die Laut gegen Nazis unterst??tzen haben oftmals einen Migrationshintergrund
+K??nstler, die einen Migrationshintergrund haben eher poltitisch
+
+
+die K??nstler der Unfollowme engagieren sich eher f??r politische Organisationen als die von COunter speech, aufgrund des Einzugs der AfD in den Bundestag
+
+Aufgrund verschiedener gemeinsamer konzerte engagieren sich K??nstler von COunterspeech eher f??r dieselben Orgas als bei Unfollowme
+
+Wichtige Netzwerkma??e: 
+Degrees 
+Migrationshintergrund etc. weniger follower = weniger degrees?
+Cluster
+density f??r engagieren sie sich f??r das gleiche und viel ?
+Isolates 
+Broker 
+nach politik schauen (wenn LGN dann auch andere Politik?)
+
+```{r Pakete laden}
+library("igraph")
+library("igraphdata")
+
+# Selbsttest: Manipulieren Sie direkt im Skript oben die Werte f??r n=18 und power=1. Was passiert, wenn 35 Personen im Netzwerk sind und die Power den Wert 2 hat?
+```
+
+
+
+
+
+
+```{r Netzwerk zusammen}
+zusnod <- read.csv("https://raw.githubusercontent.com/birx/Blockseminar/master/GemeinsamNodes10.csv", header=T, as.is=T)
+
+zusedge <-  read.csv("https://raw.githubusercontent.com/birx/Blockseminar/master/GemeinsamEdges06.csv", header=T, as.is=T)
+
+zusmatrix <- as.matrix(zusedge)
+
+zusammen <- graph_from_data_frame(d=zusedge, vertices=zusnod, directed=F)
+plot(zusammen, 
+     layout=layout_with_gem)
+zusammen
+
+lgno <- delete_vertices(zusammen, V(zusammen)[name="Laut gegen Nazis"])
+# plot(zusammen, edge.arrow.size=.5, vertex.label.color="black",
+
+
+```
+
+```{r Teilntzwerk Unfollowme}
+u <- delete_vertices(zusammen, V(zusammen)[Projekt=="2"])
+plot(u,
+     layout=layout_with_kk,
+     sub="Teilnetzwerk Unfollowme")
+uo <- delete_vertices(u, V(u)[name == "Laut gegen Nazis"])
+plot(uo,
+     layout=layout_with_kk,
+     sub="Unfollowme ohne Laut gegen Nazis")
+```
+
+```{r Teilnetzwerk Counterspeech}
+c <- delete_vertices(zusammen, V(zusammen)[Projekt=="1"])
+plot(c,
+     layout=layout_with_kk)
+co <- delete_vertices(c, V(c)[name == "Laut gegen Nazis"])
+plot(co, 
+     layout=layout_with_kk,
+     sub="Counterspeech ohne Laut gegen Nazis")
+```
+```{r Two-mode erstellen}
+V(lgno)[(V(lgno)$type=="2")]$shape <- "square" # Two Mode visualisierung f??r Netzwerk Zusammen ohne LGN
+V(lgno)[(V(lgno)$type=="1")]$shape <- "circle"
+
+V(uo)[(V(uo)$type=="2")]$shape <- "square" # Two Mode visualisierung f??r Netzwerk unfollowme ohne LGN
+V(uo)[(V(uo)$type=="1")]$shape <- "circle"
+
+V(co)[(V(co)$type=="2")]$shape <- "square" # Two Mode visualisierung f??r Netzwerk Counterspeech ohne LGN 
+V(co)[(V(co)$type=="1")]$shape <- "circle"
+```
+
+ ***Veranschaulichung wer zu welchem Projekt geh??rt***
+ 
+Die einzelnen Projekte werden Visualisiert, dabei werden die Knoten, die sowohl in Counterspeech als auch in Unfollowme vorkommen gr??n visualisiert. 
+```{r Visualisierung der Projekte}
+V(zusammen)[(V(zusammen)$Projekt=="3")]$color <- "darkolivegreen2" # die Farben zeigen verschiedene Projekte an 
+V(zusammen)[(V(zusammen)$Projekt=="1")]$color <- "coral1"
+V(zusammen)[(V(zusammen)$Projekt=="2")]$color <- "deepskyblue"
+plot(zusammen)
+
+V(zusammen)[(V(zusammen)$Projekt=="3")]$color <- "gold" # Die Projektfarben werden wieder zur??ckgesetzt
+V(zusammen)[(V(zusammen)$Projekt=="1")]$color <- "gold"
+V(zusammen)[(V(zusammen)$Projekt=="2")]$color <- "gold"
+
+plot(zusammen)
+
+
+```
+These: Es engagieren sich mehr K??nstler mit Migrationshintergrund bei den Projekten, da ... 
+
+Um herauszufinden, welche der K??nstler einen Migrationshintergrund haben wird nach dem attribut "migration" selektiert, das den Wert 1 oder 2 annimmt
+herausfinden, welche K??nstler einen Migrationshintergrund haben und welche nicht
+
+*** Migrationshintergrund *** 
+These: F??r Laut gegen Nazis organisieren sich am Meisten K??nstler mit Migrationshintergrund. 
+```{r Migration herausfinden }
+
+V(lgno)[(V(lgno)$migration=="1")]$color <- "red" 
+
+migration<- delete_vertices(lgno, V(lgno)[migration =="99"]) # es werden knoten gel??scht, damit nur die ??brig bleiben, die K??nstler ??brig bleiben, die einen Migrationshintergrund haben f??r eine bessere ??bersicht. 
+plot(migration,
+     layout=layout.grid) 
+
+plot(lgno, 
+     layout= layout_with_kk)
+     
+
+```
+
+*** Viele der K??nstler engagieren sich auch f??r andere Politische Organisationen***
+
+herausfinden, ob K??nstler mit Migrationshintergrund sich auch eher f??r Politik engagieren
+```{r mit Migrationshintergrund und Politik }
+  V(lgno)[(V(lgno)$engagement=="5")]$color <- "firebrick"
+V(lgno)[(V(lgno)$migration=="1")]$color <- "gold"
+plot(lgno, layout=layout_nicely)
+# Visualisiert im Gesamtnetzwerk alle politisch engagierten Organisationen in rot
+```
+
+```{r}
+V(lgno)[(V(lgno)$migration=="1")]$color <- "red"
+politik1<- delete_vertices(lgno, V(lgno)[engagement !="5" & type=="2" ]) # alles l??schen was sowohl nicht sich f??r politik engagiert ALS AUCH eine Organisation ist (alle Organisationen die sich nicht f??r politik engagieren)
+mm<- delete_vertices(politik1, V(politik1)[type=="1" & migration != "1"]) #Alle Personen mit NA (3) Migration l??schen 
+
+plot(mm, 
+     vertex.label=NA,
+     layout= layout_with_kk)
+degree(mm) # Anzahl der Verbindungen von Personen mit Migrationshintergrund zu politischen Organisationen
+gsize(mm)
+```
+
+
+K??nstler mit Migrationshintergrund engagieren sich f??r 7 Organisationen der Politik. Insgesamt gibt es 16 Menschen mit Migrationshintergrund. 
+
+Es wurden alle Organisationen gel??scht, die sich nicht f??r Politik engagieren und alle Personen, die keinen Migrationshintergrund haben. Es bleibt das Netzwerk aus Menschen mit Migrationshintergrund. Man erkennt, dass nun 5 Organisationen aus dem Bereich Politik alleine stehen. 6 Organisationen aus dem Bereich Politik sind mit K??nstlern mit Migrationshintergrund verbunden. 
+
+Nun werden die K??nstler ohne Migrationshintergrund zum Vergleich herangezogen. 
+
+```{r Ohne Migrationshintergrund und Politik}
+V(lgno)[(V( lgno)$engagement=="5")]$color <- "firebrick"
+politik2<- delete_vertices(lgno, V(lgno)[engagement !="5" & type=="2" ]) # alles l??schen was sowohl nicht sich f??r politik engagiert ALS AUCH eine Organisation ist (alle Organisationen die sich nicht f??r politik engagieren)
+omigration <- delete_vertices(politik2, V(politik2)[migration=="1"])
+plot(omigration, layout=layout_with_kk)
+degree(omigration) 
+gsize(omigration) # z??hlt die Verbindungen
+```
+ K??nstler ohne Migrationshintergrund engagieren sich f??r 9 Organisationen der Politik. Insgesamt gibt es 25 Personen ohne Migrationshintergrund. 
+ 
+ Gegen??berstellung beider Netzwerke: 
+```{r}
+par(mfrow=c(1,2), mar=c(0,0,2,1)) # definiert, dass 3 Abbildungen in einer Zeile stehen
+plot(omigration, 
+     sub = "Kuenstler ohne Migrationshintergrund, die sich fuer politische Organisationen engagieren")
+plot(mm,
+     sub= "Kuenstler mit Migrationshintergrund, die sich fuer politische Organisationen engagieren")
+
+
+```
+
+```{r Darstellung zur??cksetzen}
+
+par(mfrow=c(1,1), mar=c(0,0,2,2)) # setzt die Darstellung wieder zur??ck
+
+V(lgno)[(V(lgno)$engagement=="5")]$color <- "gold"
+V(lgno)[(V(lgno)$engagement!="5")]$color <- "gold"
+V(lgno)[(V(lgno)$migration=="1")]$color <- "gold"
+V(lgno)[(V(lgno)$migration!="1")]$color <- "gold"
+plot(lgno)
+```
+
+*** These: Bekanntere K??nstler engagieren sich h??ufiger als weniger bekannte. *
+
+```{r followerzahlen}
+#nur Personen mit Follower unter 200.000 bleiben ??brig
+follow <- delete_vertices(lgno, V(lgno)[follower >6 & type=="1" ]) 
+V(follow)[(V(follow)$Projekt=="3")]$color <- "darkolivegreen2"
+V(follow)[(V(follow)$Projekt=="1")]$color <- "coral1"
+V(follow)[(V(follow)$Projekt=="2")]$color <- "deepskyblue"
+plot(follow)
+degree(follow)
+
+#nur Personen mit Follower ??ber 200.000 bleiben ??brig
+follow1 <-delete_vertices(lgno, V(lgno)[follower <7 & type=="1" ]) 
+follow2 <-delete_vertices(follow1, V(follow1)[follower ==99 & type=="1" ])
+V(follow2)[(V(follow2)$Projekt=="3")]$color <- "darkolivegreen2"
+V(follow2)[(V(follow2)$Projekt=="1")]$color <- "coral1"
+V(follow2)[(V(follow2)$Projekt=="2")]$color <- "deepskyblue"
+plot(follow2)
+degree(follow1)
+degree(follow2)
+gsize(follow) #??berpr??ft die Edges (=16)
+gsize(follow2) # ??berpr??ft die Edges (=13)
+
+```
+```{r zur??cksetzen}
+
+```
+
+
+*** Gleiches Management gleiche Organisationen *
+
+```{r}
+plot(lgno)
+V(lgno)[(V(lgno)$management==2)]$color <- "red"
+plot(lgno, layout=layout_nicely)
+```
+
+
+
+
+
+
+
+
+```{r Netzwerkma??e}
+components(zusammen) # Anzahl der Komponenten (alle Knoten, die miteinander verbunden sind)
+is_connected(zusammen) # zeigt an ob das Netzwerk miteinander verbunden ist (ob es eine einzige Komponente ist)
+
+diameter(zusammen) # Welchen Durchmesser hat das Netzwerk? (Umfang) Berechnet, wie der Abstand im Netzwerk ist
+
+edge_density(zusammen) # Wie ist die Dichte des Netzwerks? 
+edge_density(unfollow)
+edge_density(counterspeech)
+
+plot(LGN, layout=layout_with_kk, main= "unfollow")
+plot(CS2, layout=layout_with_kk, main = "Counterspeech")
+
+mean_distance (zusammen)# Pfaddistanz wie lange bis zum am weitesten entfernten Knoten? 
+
+```
+
+```{r Clusteranalyse}
+gc <- cluster_walktrap(UF2)                             # Cluster des Teilnetzwerks von Unfollowme
+modularity(gc)
+membership(gc)
+plot (gc, UF2, 
+      edge.arrow.size=.2, 
+      vertex.label=NA,
+      sub="Cluster Unfollowme")
+
+gc <- cluster_walktrap(CS2)                             # Cluster des Teilnetzwerks von Counterspeech
+modularity(gc)
+membership(gc)
+plot (gc, CS2, 
+      edge.arrow.size=.2, 
+      vertex.label=NA,
+      sub="Cluster Counterspeech")
+
+
+
+```
+
+
+```{r Egonetzwerk}
+egoViva <- make_ego_graph(zusammen, order=2, c("Viva con Agua de Sankt Pauli e.V"))
+plot(egoViva[[1]], edge.arrow.size=.1, layout=layout_nicely)
+```
+
+```{r}
+dyad_census(lgno)
+
+largest.cliques(lgno)
+```
+```{r}
+ds <- degree(lgno)
+hist(ds, 
+     breaks=1:vcount(lgno)-1, 
+     main="Anzahl der Degrees im Netzwerk s")
+```
+```{r}
+inds <- degree(lgno, mode="in")
+inds
+plot(lgno, 
+     vertex.size=inds*2,
+     layout=layout_nicely)
+```
+
