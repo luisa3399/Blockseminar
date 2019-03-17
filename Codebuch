@@ -18,7 +18,7 @@ Definiert das Jahr, in dem sich der/die KünstlerIn für die Organisation engagi
 Nodelist
 
 id
-Gibt die Namen der KünstlerInnen und der Organisationen an 
+Gibt Kürzel der Namen der KünstlerInnen und der Organisationenen an 
 
 name
 Gibt die vollständigen Namen der KünstlerInnen und Organisationen an 
@@ -27,22 +27,31 @@ type
 Unterscheidung zwischen KünstlerIn und Organisation. 1 = Person, 2 = Organisation 
 
 sex
-1 = männlich, 2 = weiblich, 3 = divers, 4 = NA
+Denfiniert das Geschlecht des Künstlers / der Künstlerin. Bei Bands und Organisationen steht hier immer NA. 1 = männlich, 2 = weiblich, 3 = divers, 99 = NA
 
 art
-Unterscheidung in welchem Bereich der/die KünstlerIn tätig ist. 1 = MusikerIn, 2 = SchauspielerIn, 3 = SportlerIn, 4 = ModeratorIn, 5 = BloggerIn, 6 = Model, 7 = JournalistIn, 8 = NA
+Definiert in welchem Bereich der/die KünstlerIn tätig ist. Bei Organisationen steht hier immer NA. 1 = MusikerIn, 2 = SchauspielerIn, 3 = SportlerIn, 4 = ModeratorIn, 5 = BloggerIn, 6 = Model, 7 = JournalistIn, 99 = NA
+
+art2
+Definiert den zweiten Bereich in dem ein/e KünstlerIn eventuell zusätzlich tätig ist. Bei Organisationen steht hier immer NA. 1 = MusikerIn, 2 = SchauspielerIn, 3 = SportlerIn, 4 = ModeratorIn, 5 = BloggerIn, 6 = Model, 7 = JournalistIn, 99 = NA
+
+art3
+Definiert den dritten Bereich in dem ein/e KünstlerIn eventuell zusätzlich tätig ist. Bei Organisationen steht hier immer NA. 1 = MusikerIn, 2 = SchauspielerIn, 3 = SportlerIn, 4 = ModeratorIn, 5 = BloggerIn, 6 = Model, 7 = JournalistIn, 99 = NA
 
 natonalität
-1 = Deutsch, 2 = Sonstiges, 3 = NA
+Definiert die Nationalität des Künstlers / der Künstlerin. Bei Bands und Organisationen steht hier immer NA. 1 = Deutsch, 2 = Sonstiges, 99 = NA
 
 migration
-Definiert, ob der/die KünstlerIn einen Migrationshintergrund hat. 1 = Ja, 2 = Nein, 3 = NA
+Definiert, ob der/die KünstlerIn einen Migrationshintergrund hat. Bei Bands und Organisationen steht hier immer NA. 1 = Ja, 2 = Nein, 3 = Unbekannt, 99 = NA
 
-engagement
-Definiert, in welchem Bereich der/die KünstlerIn sich engagiert. 1 = Bildung, 2 = Kinder, 3 = Behinderung, 4 = Umwelt, 5 = Politik, 6 = Gesundheit, 7 = Sport, 8 = Gesellschaft, 9 = NA
+engagement 1
+Definiert, in welchem Bereich sich die Organisation engagiert. Bei KünstlerInnen steht hier immer NA. 1 = Bildung, 2 = Kinder, 3 = Behinderung, 4 = Umwelt, 5 = Politik, 6 = Gesundheit, 7 = Sport, 8 = Gesellschaft, 99 = NA
+
+engagement 2 
+Definiert, wenn sich die Organisation noch in einem weiteren Bereich engagiert. Bei KünstlerInnen steht hier immer NA. 1 = Bildung, 2 = Kinder, 3 = Behinderung, 4 = Umwelt, 5 = Politik, 6 = Gesundheit, 7 = Sport, 8 = Gesellschaft, 99 = NA
 
 follower
-Definiert, wie viele Follower der/die KünstlerIn auf Instagram hat. 1 = unter 10.000, 2 = 10.000 - 25.000, 3 = 25.001 - 50.000, 4 = 50.001 - 100.000, 5 = 100.001 - 150.000, 6 = 150.001 - 200.000, 7 = 200.001 - 250.000, 8 = 250.001 - 300.000, 9 = über 300.000, 10 = Künstler ohne Instagram, 99 = Organisationen ohne Instagram
+Definiert, wie viele Follower der/die KünstlerIn auf Instagram hat. Stand 11.03.2019. 1 = unter 10.000, 2 = 10.000 - 25.000, 3 = 25.001 - 50.000, 4 = 50.001 - 100.000, 5 = 100.001 - 150.000, 6 = 150.001 - 200.000, 7 = 200.001 - 250.000, 8 = 250.001 - 300.000, 9 = über 300.000, 10 = Künstler ohne Instagram, 99 = Organisationen ohne Instagram
 
 alter
 Definiert, wie alt der/der KünstlerIn ist. 1 = unter 20 Jahre, 2 = 20 - 30 Jahre, 3 = 31 - 40 Jahre, 4 = über 40 Jahre, 5 = NA
@@ -50,3 +59,8 @@ Definiert, wie alt der/der KünstlerIn ist. 1 = unter 20 Jahre, 2 = 20 - 30 Jahr
 management
 Definiert, bei welchem Management der/die KünstlerIn unter Vertrag ist. 1 = Sony Music Entertainment Germany GmbH, 2 = Four Music, 3 = Universal Music GmbH, 4 = musikwirtschaft.de GmbH, 	5	= Lars Grewe Management, 	6	= Brandvertise GmbH, 7 = Hamburg13, 8 =	Koeterhai, 9 = k-artists, 10	= Uwe Kobler, 11 = Ghosh und Hasenjäger GbR, 12 = Die Bude | Mussell & Pulm GbR, 13 =	SoulForce, 14 =	ehemals Spike Management, 15 = players agentur management GmbH, 16 = THE AGENCEE, 17	= musikwirtschaft.de GmbH, 18	= Kilian Reischl & Robin Karow, 19 = SAM – Starwatch Artist Management GmBH, 20 = Brunetti Management, 21 = BESTE, 22 = Agentur Ahrweiler, 23 = Culcha Sound, 24 = MODELWERK, 25	= POLICE RECORDS, Urban, 26	= Superfriends, 27 = OH JUNGE, 28 = Alba Berlin, 29 = Proletik, 30 = FC Berlin United, 99	= NA	
 
+time 
+Defininert, in welchem Jahr das Engagement des Künstlers stattgefunden hat. 1 = 2000 - 2005, 2 = 2006 - 2008, 3 = 2009 - 2011, 4 = 2012 - 2014, 5 = 2015 - 2017, 6 = 2018 - 2019, 99 = NA
+
+Projekt 
+Definiert, für welches Projekt der/die KünstlerIn sich engagiert. Die Organisationen, für die sich der/die KünstlerIn darüber hinaus engagiert, bekommt dieselbe Zahl. 1 = #Unfollowme, 2 = Counterspeech, 3 = engagiert sich für beide Projekte
